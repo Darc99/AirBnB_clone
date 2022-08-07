@@ -6,6 +6,8 @@ Base Model Module
 
 from datetime import datetime
 import uuid
+import models
+
 
 class BaseModel:
     """
@@ -30,6 +32,7 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = self.created_at
             # self.updated_at = datetime.now()
+            models.storage.new(self)
 
     def __str__(self) -> str:
         """
@@ -43,13 +46,14 @@ class BaseModel:
 
         """
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """
         Returns dictionary containing all keys/values
         
         """
-        class_details = self.__dict__
+        class_details = self.__dict__.copy()
         class_details['__class__'] = self.__class__.__name__
         class_details['created_at'] = self.created_at.isoformat()
         class_details['updated_at'] = self.updated_at.isoformat()
