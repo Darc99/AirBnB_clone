@@ -34,3 +34,35 @@ class TestBaseModel(unittest.TestCase):
         bMod = BaseModel()
         self.assertIsInstance(bMod.updated_at, datetime)
 
+    def test_base_model_uuid_expected_format(self):
+        """
+        
+        """
+        bMod = BaseModel()
+        self.assertIsInstance(uuid.UUID(bMod.id), uuid.UUID)
+
+    # def test_base_model_uuid_wrong_format(self):
+    #     """
+        
+    #     """
+    #     bMod = BaseModel()
+
+    def test_base_model_uuid_version(self):
+        """
+        
+        """
+        bMod = BaseModel()
+        converted_uuid = uuid.UUID(bMod.id)
+
+        self.assertEqual(converted_uuid.version, 4)
+
+    def test_base_model_different_uuid(self):
+        """
+        
+        """
+        bMod_one = BaseModel()
+        bMod_two = BaseModel()
+        converted_uuid_one = uuid.UUID(bMod_one.id)
+        converted_uuid_two = uuid.UUID(bMod_two.id)
+
+        self.assertNotEqual(converted_uuid_one, converted_uuid_two)
