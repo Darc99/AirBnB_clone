@@ -1,44 +1,38 @@
 #!/usr/bin/python3
-"""
-Base Model Module
-
-"""
-
+""" Base Model Module """
 from datetime import datetime
-import uuid
+from uuid import uuid4
 import models
 
 
 class BaseModel:
-    """
-    Base Model Class
-
-    """
+    """ Base Model Class """
 
     def __init__(self, *args, **kwargs) -> None:
         """
         Init Method
 
+        Args:
+            *args (any): Unused.
+            **kwargs (dict): Key/value pairs of attributes.
         """
-        if kwargs:
-            for arg, val in kwargs.items():
-                if arg in ('created_at', 'updated_at'):
-                    val = datetime.strptime(val, '%Y-%m-%dT%H:%M:%S.%f')
-
-                if arg != '__class__':
-                    setattr(self, arg, val)
+        timeFormat = "%Y-%m-%dT%H:%M:%S.%f"
+        self.id = str(uuid4())
+        self.created_at = datetime.today()
+        self.updated_at = datetime.today()
+        if len(kwargs) != 0:
+            for k, v in kwargs.items():
+                if k == "created_at" or k == "updated_at":
+                    self.__dict__[k] = datetime.strptime(v, timeFormat)
+                else:
+                    self.__dict__[k] = v
         else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = self.created_at
-            # self.updated_at = datetime.now()
             models.storage.new(self)
 
-    def __str__(self) -> str:
-        """
-        
-        """
-        return '[{0}] ({1}) {2}'.format(self.__class__.__name__, self.id, self.__dict__)
+    def __str__(self):
+        """Return the print/str representation of the BaseModel instance."""
+        cname = self.__class__.__name__
+        return "[{}] ({}) {}".format(cname, self.id, self.__dict__)
 
     def save(self):
         """
@@ -49,10 +43,7 @@ class BaseModel:
         models.storage.save()
 
     def to_dict(self):
-        """
-        Returns dictionary containing all keys/values
-        
-        """
+        """ Returns dictionary containing all keys/values """
         class_details = self.__dict__.copy()
         class_details['__class__'] = self.__class__.__name__
         class_details['created_at'] = self.created_at.isoformat()

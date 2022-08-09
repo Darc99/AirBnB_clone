@@ -1,6 +1,5 @@
 #!/usr/bin/python3
-"""Defines unittests for models/base_model.py.
-"""
+"""Defines unittests for models/base_model.py"""
 import os
 import models
 import unittest
